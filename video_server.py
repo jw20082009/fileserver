@@ -38,13 +38,17 @@ class VideoServerHandler(BaseHTTPRequestHandler):
             files = os.listdir(UPLOAD_DIR)
             files_html = '\n'.join([
                 f'''<li>
-                    <a href="/videos/{f}">{f}</a>
-                    <span style="color: #666; margin: 0 10px;">
-                        (Upload Time: {upload_info.get(f, {}).get('time', 'Unknown')} | 
-                         Upload IP: {upload_info.get(f, {}).get('ip', 'Unknown')})
-                    </span>
-                    <button onclick="deleteFile('{f}')" class="delete-button">Delete</button>
-                    <button onclick="copyVideoUrl('{f}')" class="copy-button">Copy URL</button>
+                    <div class="video-item">
+                        <a href="/videos/{f}">{f}</a>
+                        <span class="video-info">
+                            (Upload Time: {upload_info.get(f, {}).get('time', 'Unknown')} | 
+                             Upload IP: {upload_info.get(f, {}).get('ip', 'Unknown')})
+                        </span>
+                        <div class="button-group">
+                            <button onclick="deleteFile('{f}')" class="delete-button">Delete</button>
+                            <button onclick="copyVideoUrl('{f}')" class="copy-button">Copy URL</button>
+                        </div>
+                    </div>
                 </li>''' for f in files
             ])
             
@@ -53,39 +57,121 @@ class VideoServerHandler(BaseHTTPRequestHandler):
                 <head>
                     <title>Video Server</title>
                     <style>
-                        body {{ font-family: Arial, sans-serif; margin: 20px; }}
-                        .upload-form {{ margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }}
-                        .file-list {{ margin-top: 10px; }}
-                        #selected-files {{ margin: 10px 0; color: #666; }}
-                        .progress {{ width: 100%; height: 20px; background: #f0f0f0; margin: 10px 0; border-radius: 10px; }}
-                        .progress-bar {{ width: 0%; height: 100%; background: #4CAF50; border-radius: 10px; transition: width 0.3s; }}
-                        .progress-text {{ margin-top: 5px; color: #666; }}
+                        body {{ 
+                            font-family: Arial, sans-serif; 
+                            margin: 20px; 
+                            background-color: #1a1a1a;
+                            color: #e0e0e0;
+                        }}
+                        .upload-form {{ 
+                            margin: 20px 0; 
+                            padding: 20px; 
+                            border: 1px solid #333; 
+                            border-radius: 8px; 
+                            background-color: #2d2d2d;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                        }}
+                        .file-list {{ 
+                            margin-top: 20px; 
+                            padding: 20px;
+                            background-color: #2d2d2d;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                        }}
+                        .file-list ul {{
+                            list-style: none;
+                            padding: 0;
+                            margin: 0;
+                        }}
+                        .file-list li {{ 
+                            margin: 20px 0;
+                            padding: 20px;
+                            border-bottom: 1px solid #404040;
+                            transition: background-color 0.2s;
+                        }}
+                        .file-list li:last-child {{
+                            border-bottom: none;
+                        }}
+                        .file-list li:hover {{
+                            background-color: #383838;
+                        }}
+                        .video-item {{
+                            display: flex;
+                            align-items: center;
+                            flex-wrap: wrap;
+                            gap: 15px;
+                        }}
+                        .video-info {{
+                            color: #888;
+                            flex: 1;
+                        }}
+                        .button-group {{
+                            display: flex;
+                            gap: 10px;
+                        }}
+                        #selected-files {{ margin: 10px 0; color: #b0b0b0; }}
+                        .progress {{ 
+                            width: 100%; 
+                            height: 20px; 
+                            background: #404040; 
+                            margin: 10px 0; 
+                            border-radius: 10px; 
+                        }}
+                        .progress-bar {{ 
+                            width: 0%; 
+                            height: 100%; 
+                            background: #4CAF50; 
+                            border-radius: 10px; 
+                            transition: width 0.3s; 
+                        }}
+                        .progress-text {{ margin-top: 5px; color: #b0b0b0; }}
                         .delete-button {{ 
                             color: white; 
-                            background-color: #ff4444; 
-                            margin-left: 10px; 
+                            background-color: #d32f2f; 
                             border: none;
-                            padding: 5px 10px;
-                            border-radius: 3px;
+                            padding: 8px 15px;
+                            border-radius: 4px;
                             cursor: pointer;
+                            transition: background-color 0.2s;
                         }}
-                        .delete-button:hover {{ background-color: #cc0000; }}
+                        .delete-button:hover {{ background-color: #b71c1c; }}
                         .copy-button {{ 
                             color: white; 
-                            background-color: #2196F3; 
-                            margin-left: 10px; 
+                            background-color: #0288d1; 
                             border: none;
-                            padding: 5px 10px;
-                            border-radius: 3px;
+                            padding: 8px 15px;
+                            border-radius: 4px;
                             cursor: pointer;
+                            transition: background-color 0.2s;
                         }}
-                        .copy-button:hover {{ background-color: #1976D2; }}
+                        .copy-button:hover {{ background-color: #01579b; }}
+                        input[type="file"] {{
+                            padding: 10px;
+                            border: 1px solid #404040;
+                            border-radius: 4px;
+                            width: 100%;
+                            margin-bottom: 10px;
+                            background-color: #333;
+                            color: #e0e0e0;
+                        }}
+                        h2 {{
+                            color: #4CAF50;
+                            margin-bottom: 20px;
+                        }}
+                        a {{ 
+                            color: #64b5f6; 
+                            text-decoration: none;
+                            transition: color 0.2s;
+                        }}
+                        a:hover {{ 
+                            color: #2196f3;
+                        }}
                         .toast {{
                             position: fixed;
                             bottom: 20px;
                             left: 50%;
                             transform: translateX(-50%);
-                            background-color: #333;
+                            background-color: rgba(66, 66, 66, 0.95);
                             color: white;
                             padding: 12px 24px;
                             border-radius: 4px;
@@ -99,18 +185,6 @@ class VideoServerHandler(BaseHTTPRequestHandler):
                             90% {{ opacity: 1; }}
                             100% {{ opacity: 0; }}
                         }}
-                        input[type="submit"] {{
-                            background-color: #4CAF50;
-                            color: white;
-                            padding: 10px 20px;
-                            border: none;
-                            border-radius: 5px;
-                            cursor: pointer;
-                        }}
-                        input[type="submit"]:hover {{ background-color: #45a049; }}
-                        li {{ margin: 10px 0; }}
-                        a {{ color: #2196F3; text-decoration: none; }}
-                        a:hover {{ text-decoration: underline; }}
                     </style>
                     <script>
                         let uploadQueue = [];
@@ -238,14 +312,14 @@ class VideoServerHandler(BaseHTTPRequestHandler):
                         }}
 
                         function deleteFile(filename) {{
-                            if (confirm('Are you sure you want to delete ' + filename + '?')) {{
+                            if (confirm('确定要删除视频 "' + filename + '" 吗？此操作不可恢复。')) {{
                                 fetch('/delete/' + encodeURIComponent(filename), {{
                                     method: 'DELETE'
                                 }}).then(response => {{
                                     if (response.ok) {{
                                         window.location.reload();
                                     }} else {{
-                                        alert('Delete failed!');
+                                        alert('删除失败！');
                                     }}
                                 }});
                             }}
