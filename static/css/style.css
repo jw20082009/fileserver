@@ -210,3 +210,21 @@ h2 {
         text-align: center;
     }
 }
+
+.upload-hint {
+    color: var(--text-secondary);
+    margin: 10px 0;
+}
+
+.upload-button {
+    background: var(--secondary-color);
+    color: white;
+    padding: 12px 24px;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 200px;
+}
+
+.upload-button:hover {
+    background: var(--secondary-dark);
+}

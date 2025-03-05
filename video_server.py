@@ -1,3 +1,4 @@
+import os
 from http.server import HTTPServer
 from handlers.video_handler import VideoServerHandler
 

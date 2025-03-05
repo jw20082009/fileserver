@@ -1,47 +1,52 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Video Server</title>
+        <title>视频服务器</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
         <link rel="stylesheet" href="/static/css/style.css">
     </head>
     <body>
         <div class="container">
             <div class="card">
-                <h2>Upload Videos</h2>
+                <h2>上传视频</h2>
                 <form id="upload-form" enctype="multipart/form-data" onsubmit="return uploadFiles()">
                     <div class="upload-zone">
                         <input type="file" name="video" id="video-input" accept="video/*" multiple 
                                onchange="updateFileList()">
+                        <p class="upload-hint">点击或拖拽视频文件到此处</p>
                     </div>
                     <div id="selected-files"></div>
                     <div class="progress">
                         <div id="progress-bar" class="progress-bar"></div>
                     </div>
                     <div id="progress-text" class="progress-text"></div>
+                    <button type="submit" class="button upload-button">开始上传</button>
                 </form>
             </div>
+
             <div class="card">
-                <h2>Video List</h2>
+                <h2>视频列表</h2>
                 <ul class="video-list">
                     {% for file in files %}
                     <li class="video-item">
                         <div class="video-info">
                             <a href="/videos/{{ file }}" class="video-link">{{ file }}</a>
                             <div class="upload-info">
-                                <span>Upload Time: {{ upload_info.get(file, {}).get('time', 'Unknown') }}</span>
-                                <span>Upload IP: {{ upload_info.get(file, {}).get('ip', 'Unknown') }}</span>
+                                <span>上传时间: {{ upload_info.get(file, {}).get('time', '未知') }}</span>
+                                <span>上传IP: {{ upload_info.get(file, {}).get('ip', '未知') }}</span>
                             </div>
                         </div>
                         <div class="button-group">
-                            <button onclick="deleteFile('{{ file }}')" class="delete-button">Delete</button>
-                            <button onclick="copyVideoUrl('{{ file }}')" class="copy-button">Copy URL</button>
+                            <button onclick="deleteFile('{{ file }}')" class="button delete-button">删除</button>
+                            <button onclick="copyVideoUrl('{{ file }}')" class="button copy-button">复制链接</button>
                         </div>
                     </li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
+
         <div id="toast" class="toast"></div>
         <script src="/static/js/main.js"></script>
     </body>
